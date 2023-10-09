@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import signal
 import sys
-
+from time import sleep
 from AbstractVirtualCapability import AbstractVirtualCapability, VirtualCapabilityServer, formatPrint
 
 
@@ -25,6 +25,9 @@ class BuildManager(AbstractVirtualCapability):
 
     def GetNextBlockPosition(self, params: dict):
         return params
+
+    def loop(self):
+        sleep(.0001)
 
 if __name__ == '__main__':
     # Needed for properly closing when process is being stopped with SIGTERM signal
