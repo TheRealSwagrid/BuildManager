@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+import json
+import os.path
 import signal
 import sys
 from time import sleep
@@ -21,6 +23,11 @@ class BuildManager(AbstractVirtualCapability):
     def LoadBuildPlan(self, params: dict):
         file_location = params["SimpleStringParameter"]
         formatPrint(self, f"Loading Build Plan: {file_location}")
+        build_plan = {}
+        if os.path.exists(file_location):
+            with open(file_location, mode='r') as file:
+                build_plan = json.loads(file.read())
+        formatPrint(self, f"New BuildPlan: {build_plan}")
         return {}
 
     def GetNextBlockPosition(self, params: dict):
