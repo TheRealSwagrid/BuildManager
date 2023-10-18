@@ -12,6 +12,7 @@ class BuildManager(AbstractVirtualCapability):
     def __init__(self, server):
         super().__init__(server)
         self.build_plan = {}
+        self.fitted_blocks = {}
 
 
     def LoadBuildPlan(self, params: dict):
@@ -24,7 +25,6 @@ class BuildManager(AbstractVirtualCapability):
         return {}
 
     def GetNextBlockPosition(self, params: dict):
-
         for key in self.build_plan.keys():
             return {"Position3D": self.build_plan[key]["pos"]}
         return params
