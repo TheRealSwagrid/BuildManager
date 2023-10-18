@@ -11,14 +11,8 @@ class BuildManager(AbstractVirtualCapability):
 
     def __init__(self, server):
         super().__init__(server)
-        self.build_plan = {
-            "block_1": {
-                "position": [0., 0., 0.]
-            },
-            "block_2" : {
+        self.build_plan = {}
 
-            }
-        }
 
     def LoadBuildPlan(self, params: dict):
         file_location = params["SimpleStringParameter"]
