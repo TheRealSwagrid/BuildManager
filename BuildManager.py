@@ -26,7 +26,7 @@ class BuildManager(AbstractVirtualCapability):
 
     def GetNextBlockPosition(self, params: dict):
         for key in self.build_plan.keys():
-            return {"Position3D": self.build_plan[key]["pos"]}
+            return {"Position3D": self.build_plan[key]["pos"], "Quaternion": self.build_plan[key]["rot"]}
         return params
 
     def loop(self):
