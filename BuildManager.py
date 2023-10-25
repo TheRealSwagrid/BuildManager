@@ -13,7 +13,8 @@ class BuildManager(AbstractVirtualCapability):
         super().__init__(server)
         self.build_plan = {}
         self.fitted_blocks = {}
-
+        self.keys = []
+        self.current_key = 0
 
     def LoadBuildPlan(self, params: dict):
         file_location = params["SimpleStringParameter"]
@@ -21,13 +22,15 @@ class BuildManager(AbstractVirtualCapability):
         if os.path.exists(file_location):
             with open(file_location, mode='r') as file:
                 self.build_plan = json.loads(file.read())
+                self.keys = self.build_plan.keys()
         formatPrint(self, f"New BuildPlan: {self.build_plan}")
         return {}
 
     def GetNextBlockPosition(self, params: dict):
-        for key in self.build_plan.keys():
-            return {"Position3D": self.build_plan[key]["pos"], "Quaternion": self.build_plan[key]["rot"]}
-        return params
+        key = self.keys[self.current_key]
+        ret = {"Position3D": self.build_plan[key]["pos"], "Quaternion": self.build_plan[key]["rot"]}
+        self.current_key += 1
+        return ret
 
     def loop(self):
         sleep(.0001)
