@@ -22,7 +22,7 @@ class BuildManager(AbstractVirtualCapability):
         if os.path.exists(file_location):
             with open(file_location, mode='r') as file:
                 self.build_plan = json.loads(file.read())
-                self.keys = set(self.build_plan.keys())
+                self.keys = list(self.build_plan.keys())
         formatPrint(self, f"New BuildPlan: {self.build_plan}")
         return {}
 
