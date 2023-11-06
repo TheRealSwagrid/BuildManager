@@ -23,6 +23,8 @@ class BuildManager(AbstractVirtualCapability):
             with open(file_location, mode='r') as file:
                 self.build_plan = json.loads(file.read())
                 self.keys = list(self.build_plan.keys())
+        else:
+            raise FileNotFoundError("This file does not exist")
         formatPrint(self, f"New BuildPlan: {self.build_plan}")
         return {}
 
