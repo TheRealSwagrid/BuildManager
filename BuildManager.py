@@ -30,7 +30,8 @@ class BuildManager(AbstractVirtualCapability):
 
     def GetNextBlockPosition(self, params: dict):
         key = self.keys[self.current_key]
-        ret = {"Position3D": self.build_plan[key]["pos"], "Quaternion": self.build_plan[key]["rot"]}
+        ret = {"Position3D": self.build_plan[key]["position"], "Quaternion": self.build_plan[key]["rotation"]}
+        ret["Vector3"] = self.build_plan["shape"]
         self.current_key += 1
         return ret
 
