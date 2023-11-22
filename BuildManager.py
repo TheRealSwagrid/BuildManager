@@ -44,6 +44,7 @@ class BuildManager(AbstractVirtualCapability):
                 return ret
         raise ValueError("No Block avaiable")
 
+    # noinspection PyUnreachableCode
     def GetWalls(self, params: dict) -> dict:
         walls = list()
         for i in range(1, self.max_key):
@@ -56,7 +57,7 @@ class BuildManager(AbstractVirtualCapability):
             x = quaternion.rotate_vectors(quat, np.array([1., 0., 0.]))
             y = quaternion.rotate_vectors(quat, np.array([0., 1., 0.]))
             z = quaternion.rotate_vectors(quat, np.array([0., 0., 1.]))
-            norm = np.cross(y, z)
+            norm = np.cross(x, z)
 
             d = np.dot(np.array(pos), norm)
             norm_0 = norm / np.sum(np.sqrt(norm**2))
