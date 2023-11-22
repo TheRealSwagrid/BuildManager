@@ -32,7 +32,7 @@ class BuildManager(AbstractVirtualCapability):
             key = str(i)
             if key not in self.fitted_blocks:
                 for dependency in self.build_plan[key]["depends_on"]:
-                    if dependency not in self.fitted_blocks:
+                    if str(dependency) not in self.fitted_blocks:
                         continue
                 ret = {"Position3D": self.build_plan[key]["position"], "Quaternion": self.build_plan[key]["rotation"],
                        "Vector3": self.build_plan[key]["shape"]}
