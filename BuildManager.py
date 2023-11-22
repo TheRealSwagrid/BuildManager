@@ -53,7 +53,11 @@ class BuildManager(AbstractVirtualCapability):
             rotation = block["rotation"]
 
             quat = quaternion.as_quat_array(rotation)
-            norm = quaternion.rotate_vectors(quat, np.array([1., 0., 0.]))
+            x = quaternion.rotate_vectors(quat, np.array([1., 0., 0.]))
+            y = quaternion.rotate_vectors(quat, np.array([0., 1., 0.]))
+            z = quaternion.rotate_vectors(quat, np.array([0., 0., 1.]))
+            norm = np.cross(x, y)
+
             d = np.dot(np.array(pos), norm)
             norm_0 = norm / np.sum(np.sqrt(norm**2))
             norm_0 *= -1 if d < 0 else 1
