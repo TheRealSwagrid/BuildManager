@@ -21,7 +21,7 @@ class BuildManager(AbstractVirtualCapability):
         if os.path.exists(file_location):
             with open(file_location, mode='r') as file:
                 self.build_plan = json.loads(file.read())
-                self.max_key = max(self.build_plan.keys())
+                self.max_key = max([int(k) for k in self.build_plan.keys()])
         else:
             raise FileNotFoundError("This file does not exist")
         formatPrint(self, f"New BuildPlan: {self.build_plan}")
