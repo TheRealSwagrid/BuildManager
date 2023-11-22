@@ -12,9 +12,8 @@ class BuildManager(AbstractVirtualCapability):
     def __init__(self, server):
         super().__init__(server)
         self.build_plan = {}
-        self.fitted_blocks = {}
-        self.keys = []
-        self.current_key = 0
+        self.fitted_blocks = []
+        self.max_key = -1
 
     def LoadBuildPlan(self, params: dict):
         file_location = params["SimpleStringParameter"]
@@ -22,18 +21,23 @@ class BuildManager(AbstractVirtualCapability):
         if os.path.exists(file_location):
             with open(file_location, mode='r') as file:
                 self.build_plan = json.loads(file.read())
-                self.keys = list(self.build_plan.keys())
+                self.max_key = max(self.build_plan.keys())
         else:
             raise FileNotFoundError("This file does not exist")
         formatPrint(self, f"New BuildPlan: {self.build_plan}")
         return {}
 
     def GetNextBlockPosition(self, params: dict):
-        key = self.keys[self.current_key]
-        ret = {"Position3D": self.build_plan[key]["position"], "Quaternion": self.build_plan[key]["rotation"]}
-        ret["Vector3"] = self.build_plan[key]["shape"]
-        self.current_key += 1
-        return ret
+        for key in range(1, self.max_key):
+            if key not in self.fitted_blocks:
+                for dependency in self.build_plan[key]["depends_on"]:
+                    if dependency not in self.fitted_blocks:
+                        continue
+                ret = {"Position3D": self.build_plan[key]["position"], "Quaternion": self.build_plan[key]["rotation"],
+                       "Vector3": self.build_plan[key]["shape"]}
+                self.fitted_blocks += [key]
+                return ret
+        raise ValueError("No Block avaiable")
 
     def loop(self):
 
