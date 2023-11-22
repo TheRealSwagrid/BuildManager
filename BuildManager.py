@@ -56,7 +56,7 @@ class BuildManager(AbstractVirtualCapability):
             x = quaternion.rotate_vectors(quat, np.array([1., 0., 0.]))
             y = quaternion.rotate_vectors(quat, np.array([0., 1., 0.]))
             z = quaternion.rotate_vectors(quat, np.array([0., 0., 1.]))
-            norm = np.cross(x, y)
+            norm = np.cross(y, z)
 
             d = np.dot(np.array(pos), norm)
             norm_0 = norm / np.sum(np.sqrt(norm**2))
