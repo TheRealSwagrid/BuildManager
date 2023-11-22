@@ -34,6 +34,8 @@ class BuildManager(AbstractVirtualCapability):
                 for dependency in self.build_plan[key]["depends_on"]:
                     if str(dependency) not in self.fitted_blocks:
                         continue
+                    else:
+                        print(f"{dependency} is there in {self.fitted_blocks}")
                 ret = {"Position3D": self.build_plan[key]["position"], "Quaternion": self.build_plan[key]["rotation"],
                        "Vector3": self.build_plan[key]["shape"]}
                 self.fitted_blocks += [key]
