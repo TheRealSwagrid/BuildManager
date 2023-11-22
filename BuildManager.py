@@ -3,6 +3,8 @@ import json
 import os.path
 import signal
 import sys
+import numpy as np
+import quaternion
 from time import sleep
 from AbstractVirtualCapability import AbstractVirtualCapability, VirtualCapabilityServer, formatPrint
 
@@ -42,9 +44,27 @@ class BuildManager(AbstractVirtualCapability):
                 return ret
         raise ValueError("No Block avaiable")
 
+    def GetWalls(self, params: dict) -> dict:
+        walls = set()
+        for i in range(1, self.max_key):
+            key = str(i)
+            block = self.build_plan[key]
+            pos = block["position"]
+            rotation = block["rotation"]
+
+            quat = quaternion.as_quat_array(rotation)
+            norm = quaternion.rotate_vectors(quat, np.array([1., 0., 0.]))
+            d = np.dot(np.array(pos), norm)
+            norm_0 = norm / np.sum(np.sqrt(norm**2))
+            norm_0 *= -1 if d < 0 else 1
+            d = np.dot(np.array(pos), norm_0)
+            walls.add((norm_0, d))
+        return {"ListOfPoints": walls}
+
     def loop(self):
 
         sleep(.0001)
+
 
 if __name__ == '__main__':
     # Needed for properly closing when process is being stopped with SIGTERM signal
