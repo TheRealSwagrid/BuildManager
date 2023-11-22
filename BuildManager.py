@@ -28,7 +28,8 @@ class BuildManager(AbstractVirtualCapability):
         return {}
 
     def GetNextBlockPosition(self, params: dict):
-        for key in range(1, self.max_key):
+        for i in range(1, self.max_key):
+            key = str(i)
             if key not in self.fitted_blocks:
                 for dependency in self.build_plan[key]["depends_on"]:
                     if dependency not in self.fitted_blocks:
