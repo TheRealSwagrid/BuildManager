@@ -45,7 +45,7 @@ class BuildManager(AbstractVirtualCapability):
         raise ValueError("No Block avaiable")
 
     def GetWalls(self, params: dict) -> dict:
-        walls = set()
+        walls = list()
         for i in range(1, self.max_key):
             key = str(i)
             block = self.build_plan[key]
@@ -58,7 +58,9 @@ class BuildManager(AbstractVirtualCapability):
             norm_0 = norm / np.sum(np.sqrt(norm**2))
             norm_0 *= -1 if d < 0 else 1
             d = np.dot(np.array(pos), norm_0)
-            walls.add((norm_0, d))
+            object = (list(norm_0), d)
+            if object not in walls:
+                walls.append(object)
         return {"ListOfPoints": walls}
 
     def loop(self):
