@@ -75,7 +75,7 @@ class BuildManager(AbstractVirtualCapability):
         walls = self.GetWalls(params)
         points = []
         for wall in walls["ListOfPoints"]:
-            points.append(np.array(wall[:3])*wall[4])
+            points.append(np.array(wall[:3])*wall[3])
         return {"ListOfPoints": points}
 
     def loop(self):
