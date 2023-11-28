@@ -64,12 +64,9 @@ class BuildManager(AbstractVirtualCapability):
             norm_0 *= -1 if d < 0 else 1
             norm_0 = np.round(norm_0, decimals=1)
             d = np.round(np.dot(np.array(pos), norm_0), decimals=1)
-            ls = norm_0.tolist()
+            object = norm_0.tolist()
             # print(ls)
-            ls.append(d)
-            print(ls)
-            object = (list(norm_0), d)
-
+            object.append(d)
             if object not in walls:
                 walls.append(object)
         return {"ListOfPoints": walls}
