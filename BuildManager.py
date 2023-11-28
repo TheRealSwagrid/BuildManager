@@ -65,9 +65,9 @@ class BuildManager(AbstractVirtualCapability):
             norm_0 = np.round(norm_0, decimals=1)
             d = np.round(np.dot(np.array(pos), norm_0), decimals=1)
             ls = norm_0.tolist()
-            print(ls)
+            # print(ls)
             ls.append(d)
-            print(d)
+            print(ls)
             object = (list(norm_0), d)
 
             if object not in walls:
