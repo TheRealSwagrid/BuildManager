@@ -64,7 +64,8 @@ class BuildManager(AbstractVirtualCapability):
             norm_0 *= -1 if d < 0 else 1
             norm_0 = np.round(norm_0, decimals=1)
             d = np.round(np.dot(np.array(pos), norm_0), decimals=1)
-            ls = list(norm_0)
+            ls = norm_0.tolist()
+            print(ls)
             ls.append(d)
             print(d)
             object = (list(norm_0), d)
