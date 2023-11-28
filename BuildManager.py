@@ -71,6 +71,13 @@ class BuildManager(AbstractVirtualCapability):
                 walls.append(object)
         return {"ListOfPoints": walls}
 
+    def GetStartingPoints(self, params: dict):
+        walls = self.GetWalls(params)
+        points = []
+        for wall in walls["ListOfPoints"]:
+            points.append(np.array(wall[:3])*wall[4])
+        return {"ListOfPoints": points}
+
     def loop(self):
 
         sleep(.0001)
