@@ -95,7 +95,7 @@ class BuildManager(AbstractVirtualCapability):
 
             q = [sin_half_angle * axis[0], sin_half_angle * axis[1], sin_half_angle * axis[2], cos_half_angle]
             """
-            points.append((np.array(wall[:3]) * wall[3]).tolist() + np.abs(np.cross(wall[:3], [0, 0, 1])))
+            points.append((np.array(wall[:3]) * wall[3]).tolist() + (np.cross(wall[:3], [0, 0, 1]) != 0).astype(float).tolist())
 
         return {"ListOfPoints": points}
 
