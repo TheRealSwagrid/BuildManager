@@ -81,7 +81,7 @@ class BuildManager(AbstractVirtualCapability):
             q = quaternion.from_float_array(np.append(np.dot(np.array([0., 1., 0.]), np.array(wall[:3])),
                                                       np.cross(np.array([0., 1., 0.]), np.array(wall[:3]))))
 
-            points.append((np.array(wall[:3]) * wall[3]).tolist() + quaternion.as_float_array(q).tolist())
+            points.append((np.array(wall[:3]) * wall[3]).tolist() + wall[:3])
         return {"ListOfPoints": points}
 
     def loop(self):
