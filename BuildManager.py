@@ -88,7 +88,6 @@ class BuildManager(AbstractVirtualCapability):
             axis = axis / linalg if linalg != 0 else [0, 0, 0]
 
             angle = np.arccos(np.dot(wall_norm, global_up))
-            raise ValueError("aN")
             half_angle = angle / 2.
             sin_half_angle = np.sin(half_angle)
             cos_half_angle = np.cos(half_angle)
