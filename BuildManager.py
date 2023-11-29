@@ -81,7 +81,7 @@ class BuildManager(AbstractVirtualCapability):
         points = []
         for wall in walls["ListOfPoints"]:
             wall_norm = np.array(wall[:3])
-            global_up = np.array([0, 1, 0])
+            global_up = np.array([0., 1., 0.])
 
             axis = np.cross(wall_norm, global_up)
             axis /= np.linalg.norm(axis)  # Normalize the axis
