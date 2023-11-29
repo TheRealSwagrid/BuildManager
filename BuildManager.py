@@ -78,7 +78,7 @@ class BuildManager(AbstractVirtualCapability):
         walls = self.GetWalls(params)
         points = []
         for wall in walls["ListOfPoints"]:
-            points.append((np.array(wall[:3])*wall[3]).tolist() + quaternion.as_float_array(quaternion.from_euler_angles(wall[:3])).tolist())
+            points.append((np.array(wall[:3])*wall[3]).tolist() + quaternion.as_float_array(quaternion.from_rotation_vector(wall[:3])).tolist())
         return {"ListOfPoints": points}
 
     def loop(self):
