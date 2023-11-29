@@ -85,19 +85,16 @@ class BuildManager(AbstractVirtualCapability):
 
             axis = np.cross(wall_norm, global_up)
             axis /= np.linalg.norm(axis)  # Normalize the axis
-            angle = np.arccos(np.dot(wall_norm, global_up))
+            angle = np.arccos(np.dot(plane_normal, global_up))
 
             half_angle = angle / 2
             sin_half_angle = np.sin(half_angle)
             cos_half_angle = np.cos(half_angle)
 
-            quaternion = [
-                sin_half_angle * axis[0],
-                sin_half_angle * axis[1],
-                sin_half_angle * axis[2],
-                cos_half_angle]
+            quaternion = np.array(
+                [sin_half_angle * axis[0], sin_half_angle * axis[1], sin_half_angle * axis[2], cos_half_angle])
 
-            points.append((np.array(wall[:3]) * wall[3]).tolist() + quaternion)
+            points.append((np.array(wall[:3]) * wall[3]).tolist() + quaternion.tolist())
         return {"ListOfPoints": points}
 
     def loop(self):
