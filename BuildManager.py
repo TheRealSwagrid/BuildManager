@@ -96,9 +96,8 @@ class BuildManager(AbstractVirtualCapability):
 
         return {"ListOfPoints": points}
 
-
-def loop(self):
-    sleep(.0001)
+    def loop(self):
+        sleep(.0001)
 
 
 if __name__ == '__main__':
