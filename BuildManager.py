@@ -81,14 +81,14 @@ class BuildManager(AbstractVirtualCapability):
         points = []
         for wall in walls["ListOfPoints"]:
             wall_norm = np.array(wall[:3])
-            global_up = np.array([0., 0., 1.])
+            global_up = np.array([0., 0., -1.])
 
             axis = np.cross(wall_norm, global_up)
             axis /= np.linalg.norm(axis)
 
             angle = np.arccos(np.dot(wall_norm, global_up))
 
-            half_angle = angle / 2.
+            half_angle = angle / 2
             sin_half_angle = np.sin(half_angle)
             cos_half_angle = np.cos(half_angle)
 
