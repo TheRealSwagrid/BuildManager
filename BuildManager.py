@@ -63,7 +63,7 @@ class BuildManager(AbstractVirtualCapability):
             norm = np.cross(x, z)
 
             d = np.dot(np.array(pos), norm)
-            norm_0 = norm / np.sum(np.sqrt(norm**2))
+            norm_0 = norm / np.sum(np.sqrt(norm ** 2))
             norm_0 *= -1 if d < 0 else 1
             norm_0 = np.round(norm_0, decimals=5)
             d = np.round(np.dot(np.array(pos), norm_0), decimals=5)
@@ -78,8 +78,9 @@ class BuildManager(AbstractVirtualCapability):
         walls = self.GetWalls(params)
         points = []
         for wall in walls["ListOfPoints"]:
-            q = quaternion.from_float_array(np.append(np.array(np.dot(np.zeros(3), np.array(wall[:3]))), np.cross(np.zeros(3), np.array(wall[:3]))))
-            points.append((np.array(wall[:3])*wall[3]).tolist() + quaternion.as_float_array(q).tolist())
+            q = quaternion.from_float_array(np.append(np.array(np.dot(np.array([0., 0., 1.]), np.array(wall[:3]))),
+                                                      np.cross(np.array([0., 0., 1.]), np.array(wall[:3]))))
+            points.append((np.array(wall[:3]) * wall[3]).tolist() + quaternion.as_float_array(q).tolist())
         return {"ListOfPoints": points}
 
     def loop(self):
