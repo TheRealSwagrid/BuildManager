@@ -38,7 +38,7 @@ class BuildManager(AbstractVirtualCapability):
                     dependency_resolved &= str(dependency) in self.fitted_blocks
                 if not dependency_resolved:
                     continue
-                pos = np.round(np.array(self.build_plan["position"]), decimals=1)
+                pos = np.round(np.array(self.build_plan["position"]), decimals=5)
                 rot = np.round(np.array(self.build_plan["rotation"]), decimals=7)
 
                 ret = {"Position3D": pos.tolist(), "Quaternion": rot.tolist(),
@@ -65,8 +65,8 @@ class BuildManager(AbstractVirtualCapability):
             d = np.dot(np.array(pos), norm)
             norm_0 = norm / np.sum(np.sqrt(norm**2))
             norm_0 *= -1 if d < 0 else 1
-            norm_0 = np.round(norm_0, decimals=1)
-            d = np.round(np.dot(np.array(pos), norm_0), decimals=1)
+            norm_0 = np.round(norm_0, decimals=5)
+            d = np.round(np.dot(np.array(pos), norm_0), decimals=5)
             object = norm_0.tolist()
             # print(ls)
             object.append(d)
