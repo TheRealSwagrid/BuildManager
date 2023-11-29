@@ -84,7 +84,9 @@ class BuildManager(AbstractVirtualCapability):
             global_up = np.array([0., 1., 0.])
 
             axis = np.cross(wall_norm, global_up)
-            axis /= np.linalg.norm(axis)  # Normalize the axis
+            linalg = np.linalg.norm(axis)
+            axis = axis / linalg if linalg != 0 else [0, 0, 0]
+
             angle = np.arccos(np.dot(wall_norm, global_up))
 
             half_angle = angle / 2.
