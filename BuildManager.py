@@ -80,6 +80,7 @@ class BuildManager(AbstractVirtualCapability):
         walls = self.GetWalls(params)
         points = []
         for wall in walls["ListOfPoints"]:
+            """
             wall_norm = np.array(wall[:3])
             global_up = np.array([0, 0, 1])
 
@@ -93,7 +94,8 @@ class BuildManager(AbstractVirtualCapability):
             cos_half_angle = np.cos(half_angle)
 
             q = [sin_half_angle * axis[0], sin_half_angle * axis[1], sin_half_angle * axis[2], cos_half_angle]
-            points.append((np.array(wall[:3]) * wall[3]).tolist() + q)
+            """
+            points.append((np.array(wall[:3]) * wall[3]).tolist() + np.abs(np.cross(wall[:3], [0, 0, 1])))
 
         return {"ListOfPoints": points}
 
