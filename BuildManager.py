@@ -3,6 +3,8 @@ import json
 import os.path
 import signal
 import sys
+from copy import deepcopy
+
 import numpy as np
 import quaternion
 from time import sleep
@@ -78,10 +80,23 @@ class BuildManager(AbstractVirtualCapability):
         walls = self.GetWalls(params)
         points = []
         for wall in walls["ListOfPoints"]:
-            q = quaternion.from_float_array(np.append(np.dot(np.array([0., 0., 0.]), np.array(wall[:3])),
-                                                      np.cross(np.array([0., 0., 1.]), np.array(wall[:3]))))
+            wall_norm = np.array(wall[:3])
+            global_up = np.array([0, 0, 1])
 
-            points.append((np.array(wall[:3]) * wall[3]).tolist() + np.cross([0., 0., 1.], wall[:3]).tolist())
+            axis = np.cross(wall_norm, global_up)
+            axis /= np.linalg.norm(axis)  # Normalize the axis
+            angle = np.arccos(np.dot(plane_normal, global_up))
+
+            half_angle = angle / 2
+            sin_half_angle = np.sin(half_angle)
+            cos_half_angle = np.cos(half_angle)
+
+            quaternion = np.array([cos_half_angle,
+                                   sin_half_angle * axis[0],
+                                   sin_half_angle * axis[1],
+                                   sin_half_angle * axis[2]])
+
+            points.append((np.array(wall[:3]) * wall[3]).tolist() + quaternion.tolist())
         return {"ListOfPoints": points}
 
     def loop(self):
