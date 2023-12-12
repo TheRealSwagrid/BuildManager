@@ -49,6 +49,26 @@ class BuildManager(AbstractVirtualCapability):
                 return ret
         raise ValueError("No Block avaiable")
 
+    def GetAvailableBlocks(self, params: dict):
+        blocks = []
+        for i in range(1, self.max_key):
+            key = str(i)
+            if key not in self.fitted_blocks:
+                dependency_resolved = True
+                for dependency in self.build_plan[key]["depends_on"]:
+                    dependency_resolved &= str(dependency) in self.fitted_blocks
+                if not dependency_resolved:
+                    continue
+                pos = np.round(np.array(self.build_plan[key]["position"]), decimals=5)
+                rot = np.round(np.array(self.build_plan[key]["rotation"]), decimals=7)
+
+                ret = {"Position3D": pos.tolist(), "Quaternion": rot.tolist(),
+                       "Vector3": self.build_plan[key]["shape"], "int": key}
+                blocks.append(ret)
+        for key in blocks:
+            self.fitted_blocks += [key]
+        return {"ParameterList": blocks}
+
     # noinspection PyUnreachableCode
     def GetWalls(self, params: dict) -> dict:
         walls = list()
@@ -95,7 +115,8 @@ class BuildManager(AbstractVirtualCapability):
 
             q = [sin_half_angle * axis[0], sin_half_angle * axis[1], sin_half_angle * axis[2], cos_half_angle]
             """
-            points.append((np.array(wall[:3]) * wall[3]).tolist() + (np.cross(wall[:3], [0, 0, 1]) != 0).astype(float).tolist())
+            points.append(
+                (np.array(wall[:3]) * wall[3]).tolist() + (np.cross(wall[:3], [0, 0, 1]) != 0).astype(float).tolist())
 
         return {"ListOfPoints": points}
 
