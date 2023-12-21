@@ -18,6 +18,7 @@ class BuildManager(AbstractVirtualCapability):
         self.build_plan = {}
         self.fitted_blocks = []
         self.max_key = -1
+        self.factor = 1000
 
     def LoadBuildPlan(self, params: dict):
         file_location = params["SimpleStringParameter"]
@@ -59,11 +60,11 @@ class BuildManager(AbstractVirtualCapability):
                     dependency_resolved &= str(dependency) in self.fitted_blocks
                 if not dependency_resolved:
                     continue
-                pos = np.round(np.array(self.build_plan[key]["position"]), decimals=5)
+                pos = np.round(np.array(self.build_plan[key]["position"]), decimals=5) * self.factor
                 rot = np.round(np.array(self.build_plan[key]["rotation"]), decimals=7)
 
                 ret = {"Position3D": pos.tolist(), "Quaternion": rot.tolist(),
-                       "Vector3": self.build_plan[key]["shape"], "int": key}
+                       "Vector3": (np.array(self.build_plan[key]["shape"])*self.factor).tolist(), "int": key}
                 blocks.append(ret)
         for b in blocks:
             self.fitted_blocks += [b["int"]]
@@ -75,7 +76,7 @@ class BuildManager(AbstractVirtualCapability):
         for i in range(1, self.max_key):
             key = str(i)
             block = self.build_plan[key]
-            pos = block["position"]
+            pos = np.array(block["position"]) * self.factor
             rotation = block["rotation"]
 
             quat = quaternion.as_quat_array(rotation)
