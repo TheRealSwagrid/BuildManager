@@ -65,8 +65,8 @@ class BuildManager(AbstractVirtualCapability):
                 ret = {"Position3D": pos.tolist(), "Quaternion": rot.tolist(),
                        "Vector3": self.build_plan[key]["shape"], "int": key}
                 blocks.append(ret)
-        for key in blocks:
-            self.fitted_blocks += [key]
+        for b in blocks:
+            self.fitted_blocks += [b["int"]]
         return {"ParameterList": blocks}
 
     # noinspection PyUnreachableCode
