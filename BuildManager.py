@@ -18,7 +18,7 @@ class BuildManager(AbstractVirtualCapability):
         self.build_plan = {}
         self.fitted_blocks = []
         self.max_key = -1
-        self.factor = 1000
+        self.factor = 10
 
     def LoadBuildPlan(self, params: dict):
         file_location = params["SimpleStringParameter"]
