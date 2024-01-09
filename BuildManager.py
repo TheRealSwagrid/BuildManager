@@ -105,11 +105,9 @@ class BuildManager(AbstractVirtualCapability):
         points = []
         for wall in walls["ListOfPoints"]:
 
-            q = wall[4:7]
-
             points.append(
                 (np.array(wall[:3]) * wall[3]).tolist() + (np.cross(wall[:3], [0, 0, 1]) != 0).astype(
-                    float).tolist() + q.tolist())
+                    float).tolist() + wall[4:8])
 
         return {"ListOfPoints": points}
 
