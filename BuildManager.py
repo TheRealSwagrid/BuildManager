@@ -90,8 +90,9 @@ class BuildManager(AbstractVirtualCapability):
             norm_0 *= -1 if d < 0 else 1
             norm_0 = np.round(norm_0, decimals=5)
             d = np.round(np.dot(np.array(pos), norm_0), decimals=5)
+            print(f"Pos  {pos} ,Norm  {norm_0} D {d}")
             object = norm_0.tolist()
-            # print(ls)
+
             object.append(d)
             if object not in walls:
                 walls.append(object)
