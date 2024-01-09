@@ -64,7 +64,7 @@ class BuildManager(AbstractVirtualCapability):
                 rot = np.round(np.array(self.build_plan[key]["rotation"]), decimals=7)
 
                 ret = {"Position3D": pos.tolist(), "Quaternion": rot.tolist(),
-                       "Vector3": (np.array(self.build_plan[key]["shape"])*self.factor).tolist(), "int": key}
+                       "Vector3": (np.array(self.build_plan[key]["shape"]) * self.factor).tolist(), "int": key}
                 blocks.append(ret)
         for b in blocks:
             self.fitted_blocks += [b["int"]]
@@ -98,11 +98,11 @@ class BuildManager(AbstractVirtualCapability):
                 walls.append(object)
         return {"ListOfPoints": walls}
 
+    # noinspection PyUnreachableCode
     def GetStartingPoints(self, params: dict):
         walls = self.GetWalls(params)
         points = []
         for wall in walls["ListOfPoints"]:
-            """
             wall_norm = np.array(wall[:3])
             global_up = np.array([0, 0, 1])
 
@@ -116,9 +116,10 @@ class BuildManager(AbstractVirtualCapability):
             cos_half_angle = np.cos(half_angle)
 
             q = [sin_half_angle * axis[0], sin_half_angle * axis[1], sin_half_angle * axis[2], cos_half_angle]
-            """
+
             points.append(
-                (np.array(wall[:3]) * wall[3]).tolist() + (np.cross(wall[:3], [0, 0, 1]) != 0).astype(float).tolist())
+                (np.array(wall[:3]) * wall[3]).tolist() + (np.cross(wall[:3], [0, 0, 1]) != 0).astype(
+                    float).tolist() + q)
 
         return {"ListOfPoints": points}
 
