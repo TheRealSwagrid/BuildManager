@@ -94,7 +94,7 @@ class BuildManager(AbstractVirtualCapability):
             object = norm_0.tolist()
 
             object.append(d)
-            object.append(quat.tolist())
+            object.append(rotation)
             if object not in walls:
                 walls.append(object)
         return {"ListOfPoints": walls}
