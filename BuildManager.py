@@ -98,28 +98,36 @@ class BuildManager(AbstractVirtualCapability):
                 walls.append(object)
         return {"ListOfPoints": walls}
 
+    # Function to calculate quaternion given two vectors
+    # noinspection PyUnreachableCode
+    def quaternion_from_two_vectors(self, v1, v2):
+        v1 = np.array(v1)
+        v2 = np.array(v2)
+        v1 = v1 / np.linalg.norm(v1)
+        v2 = v2 / np.linalg.norm(v2)
+        dot_product = np.dot(v1, v2)
+        if dot_product < -0.999999:
+            # 180 degrees rotation case
+            cross = np.cross([1.0, 0.0, 0.0], v1)
+            if np.linalg.norm(cross) < 0.000001:
+                cross = np.cross([0.0, 1.0, 0.0], v1)
+            return np.array([0.0, cross[0], cross[1], cross[2]])
+        else:
+            cross_product = np.cross(v1, v2)
+            s = np.sqrt((1 + dot_product) * 2)
+            invs = 1 / s
+            xyz = cross_product * invs
+            return np.array([s * 0.5, xyz[0], xyz[1], xyz[2]])
+
     # noinspection PyUnreachableCode
     def GetStartingPoints(self, params: dict):
         walls = self.GetWalls(params)
         points = []
         for wall in walls["ListOfPoints"]:
-            wall_norm = np.array(wall[:3])
-            global_up = np.array([0, 0, 1])
-
-            axis = np.cross(wall_norm, global_up)
-            axis /= np.linalg.norm(axis)
-
-            angle = np.arccos(np.dot(wall_norm, global_up))
-
-            half_angle = angle / 2
-            sin_half_angle = np.sin(half_angle)
-            cos_half_angle = np.cos(half_angle)
-
-            q = [sin_half_angle * axis[0], sin_half_angle * axis[1], sin_half_angle * axis[2], cos_half_angle]
-
+            q = self.quaternion_from_two_vectors(np.array(wall[:3]), np.array([0.0,0.0,1.0]))
             points.append(
-                (np.array(wall[:3]) * wall[3]).tolist() + (np.cross(wall[:3], [0, 0, 1]) != 0).astype(
-                    float).tolist() + q)
+            (np.array(wall[:3]) * wall[3]).tolist() + (np.cross(wall[:3], [0, 0, 1]) != 0).astype(
+                float).tolist() + q)
 
         return {"ListOfPoints": points}
 
