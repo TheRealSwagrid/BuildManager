@@ -107,7 +107,6 @@ class BuildManager(AbstractVirtualCapability):
         v2 = v2 / np.linalg.norm(v2)
         dot_product = np.dot(v1, v2)
         if dot_product < -0.999999:
-            # 180 degrees rotation case
             cross = np.cross([1.0, 0.0, 0.0], v1)
             if np.linalg.norm(cross) < 0.000001:
                 cross = np.cross([0.0, 1.0, 0.0], v1)
@@ -125,7 +124,7 @@ class BuildManager(AbstractVirtualCapability):
         points = []
         for wall in walls["ListOfPoints"]:
 
-            q = self.quaternion_from_two_vectors(np.array(wall[:3]), np.array([1.0, 1.0, 1.0]))
+            q = self.quaternion_from_two_vectors(np.array(wall[:3]), np.array([0.0, 0.0, 1.0]))
 
             points.append(
                 (np.array(wall[:3]) * wall[3]).tolist() + (np.cross(wall[:3], [0, 0, 1]) != 0).astype(
