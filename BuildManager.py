@@ -96,7 +96,7 @@ class BuildManager(AbstractVirtualCapability):
             # Add rotation to list (should be equal over all blocks)
             rot = np.round(np.array(rotation), decimals=5).tolist()
             wall += rot
-            pseudo_walls = [w[:4] for w in wall]
+            pseudo_walls = [w[:4] for w in walls]
             if wall[:4] not in pseudo_walls:
                 walls.append(wall)
         return {"ListOfPoints": walls.tolist()}
