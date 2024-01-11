@@ -97,7 +97,8 @@ class BuildManager(AbstractVirtualCapability):
             # Add rotation to list (should be equal over all blocks)
             rot = np.round(np.array(rotation), decimals=5)
             np.append(wall, rot)
-
+            print(wall)
+            print(walls)
             if wall[:4] not in walls[:, :4]:
                 np.append(walls, wall, axis=0)
                 walls.append(wall)
