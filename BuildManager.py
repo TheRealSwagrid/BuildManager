@@ -99,7 +99,7 @@ class BuildManager(AbstractVirtualCapability):
             np.append(wall, rot)
 
             if wall[:4] not in walls[:, :4]:
-                np.append(walls, wall, axis=1)
+                np.append(walls, wall, axis=0)
                 walls.append(wall)
         return {"ListOfPoints": walls.tolist()}
 
