@@ -72,7 +72,7 @@ class BuildManager(AbstractVirtualCapability):
 
     # noinspection PyUnreachableCode
     def GetWalls(self, params: dict) -> dict:
-        walls = np.array([])
+        walls = np.array([[]])
         for i in range(1, self.max_key):
             key = str(i)
             block = self.build_plan[key]
