@@ -88,7 +88,7 @@ class BuildManager(AbstractVirtualCapability):
             d = np.dot(np.array(pos), norm)
             norm_0 = norm / np.sum(np.sqrt(norm ** 2))
             norm_0 *= -1 if d < 0 else 1
-            norm_0 = np.round(norm_0, decimals=5)
+            norm_0 = np.array(np.round(norm_0, decimals=5))
             d = np.round(np.dot(np.array(pos), norm_0), decimals=5)
             # print(f"Pos  {pos} ,Norm  {norm_0} D {d}")
             wall = norm_0
@@ -98,7 +98,7 @@ class BuildManager(AbstractVirtualCapability):
             # Add rotation to list (should be equal over all blocks)
             rot = np.round(np.array(rotation), decimals=5)
             print(rot)
-            np.append(wall, rot)
+            np.append(wall, rot, axis=1)
             print(wall)
             print(walls)
             if wall[:4] not in walls[:, :4]:
