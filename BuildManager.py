@@ -98,8 +98,12 @@ class BuildManager(AbstractVirtualCapability):
             rot = [np.round(r, decimals=6) for r in rotation]
             wall += rot
             # actual_wall
-            if wall not in walls:
-                walls.append(wall)
+            for w in walls:
+                if w[:3] == wall[:3]:
+                    continue
+                else:
+                    walls.append(wall)
+                    break
         return {"ListOfPoints": walls}
 
     # noinspection PyUnreachableCode
