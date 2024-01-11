@@ -93,9 +93,11 @@ class BuildManager(AbstractVirtualCapability):
             # print(f"Pos  {pos} ,Norm  {norm_0} D {d}")
             wall = norm_0
             np.append(wall, d)
+            print(wall)
 
             # Add rotation to list (should be equal over all blocks)
             rot = np.round(np.array(rotation), decimals=5)
+            print(rot)
             np.append(wall, rot)
             print(wall)
             print(walls)
