@@ -95,8 +95,7 @@ class BuildManager(AbstractVirtualCapability):
 
             object.append(d)
             # Add rotation to list (should be equal over all blocks)
-            # rotation = [rotation[1], rotation[2], rotation[3], rotation[0]]
-            object += rotation
+            object += [np.round(r, decimals=6) for r in rotation]
             if object not in walls:
                 walls.append(object)
         return {"ListOfPoints": walls}
