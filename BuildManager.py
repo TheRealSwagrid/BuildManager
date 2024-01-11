@@ -99,7 +99,7 @@ class BuildManager(AbstractVirtualCapability):
 
             # actual_wall
             if wall not in walls:
-                walls.append(object)
+                walls.append(wall)
         return {"ListOfPoints": walls}
 
     # noinspection PyUnreachableCode
