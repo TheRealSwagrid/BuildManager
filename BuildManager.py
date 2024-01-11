@@ -99,6 +99,8 @@ class BuildManager(AbstractVirtualCapability):
 
             print(wall)
             print(walls)
+            print(wall[:4])
+            print(walls[:, :4])
             wall = np.array(wall)
             if wall[:4] not in walls[:, :4]:
                 np.append(walls, wall, axis=0)
