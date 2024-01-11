@@ -72,7 +72,7 @@ class BuildManager(AbstractVirtualCapability):
 
     # noinspection PyUnreachableCode
     def GetWalls(self, params: dict) -> dict:
-        walls = list()
+        walls = np.array()
         for i in range(1, self.max_key):
             key = str(i)
             block = self.build_plan[key]
@@ -91,20 +91,16 @@ class BuildManager(AbstractVirtualCapability):
             norm_0 = np.round(norm_0, decimals=5)
             d = np.round(np.dot(np.array(pos), norm_0), decimals=5)
             # print(f"Pos  {pos} ,Norm  {norm_0} D {d}")
-            wall = norm_0.tolist()
+            wall = norm_0
             wall.append(d)
 
             # Add rotation to list (should be equal over all blocks)
             rot = [np.round(r, decimals=6) for r in rotation]
             wall += rot
-            # actual_wall
-            for w in walls:
-                if w[:3] == wall[:3]:
-                    continue
-                else:
-                    walls.append(wall)
-                    break
-        return {"ListOfPoints": walls}
+
+            if wall[:4] not in walls[:, :4]:
+                walls.append(wall)
+        return {"ListOfPoints": walls.tolist()}
 
     # noinspection PyUnreachableCode
     def GetStartingPoints(self, params: dict):
