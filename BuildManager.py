@@ -96,7 +96,7 @@ class BuildManager(AbstractVirtualCapability):
 
             # Add rotation to list (should be equal over all blocks)
             rot = [np.round(r, decimals=6) for r in rotation]
-
+            wall += rot
             # actual_wall
             if wall not in walls:
                 walls.append(wall)
