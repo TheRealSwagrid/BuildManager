@@ -99,7 +99,7 @@ class BuildManager(AbstractVirtualCapability):
             pseudo_walls = [w[:4] for w in walls]
             if wall[:4] not in pseudo_walls:
                 walls.append(wall)
-        return {"ListOfPoints": walls.tolist()}
+        return {"ListOfPoints": walls}
 
     # noinspection PyUnreachableCode
     def GetStartingPoints(self, params: dict):
