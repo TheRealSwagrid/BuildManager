@@ -19,6 +19,7 @@ class BuildManager(AbstractVirtualCapability):
         self.fitted_blocks = []
         self.max_key = -1
         self.factor = 1
+        self.wall_managers = []
 
     def LoadBuildPlan(self, params: dict):
         file_location = params["SimpleStringParameter"]
@@ -31,6 +32,15 @@ class BuildManager(AbstractVirtualCapability):
             raise FileNotFoundError("This file does not exist")
         formatPrint(self, f"New BuildPlan: {self.build_plan}")
         return {}
+
+    def GetWallManagers(self, params: dict):
+        if self.build_plan:
+            for wall in self.GetWalls({})["ListOfPoints"]:
+                wallManager = self.query_sync("WallManager")
+                wallManager.invoke_sync("SetWall", {"Vector3": wall})
+                wallManager.invoke_sync("SetupWall", {"int": 1})
+                self.wall_managers.append(wallManager)
+        return {"DeviceList": self.wall_managers}
 
     def GetNextBlockPosition(self, params: dict):
         for i in range(1, self.max_key):
