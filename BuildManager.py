@@ -40,6 +40,17 @@ class BuildManager(AbstractVirtualCapability):
                 wallManager.invoke_sync("SetWall", {"Vector3": wall})
                 wallManager.invoke_sync("SetupWall", {"int": 1})
                 self.wall_managers.append(wallManager)
+            walls = [[] for _ in self.wall_managers]
+            blocks = self.GetAvailableBlocks({})
+            while len(blocks) > 0:
+                for block in blocks["ParameterList"]:
+                    for i, wm in enumerate(self.wall_managers):
+                        if bool(wm.invoke_sync("IsBlockOnWall", {"Vector3":block["Position3D"]})["bool"]):
+                            walls[i].append(block)
+                            break
+                block = self.GetAvailableBlocks({})
+            for i, wm in enumerate(self.wall_managers):
+                wm.invoke_sync("SetBlocks", {"ParameterList": walls[i]})
         return {"DeviceList": self.wall_managers}
 
     def GetNextBlockPosition(self, params: dict):
