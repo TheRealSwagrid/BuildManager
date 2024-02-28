@@ -35,17 +35,19 @@ class BuildManager(AbstractVirtualCapability):
 
     def GetWallManagers(self, params: dict):
         if self.build_plan:
-            for wall in self.GetWalls({})["ListOfPoints"]:
+            for i, wall in enumerate(self.GetWalls({})["ListOfPoints"]):
                 wallManager = self.query_sync("WallManager")
-                wallManager.invoke_sync("SetWall", {"Vector3": wall})
-                wallManager.invoke_sync("SetupWall", {"int": 1})
+                # wallManager.invoke_sync("SetWall", {"Vector3": wall})
+                wallManager.invoke_sync("SetupWall",
+                                        {"int": 1, "Vector3": wall,
+                                         "ListOfPoints": self.GetStartingPoints(params)["ListOfPoints"][i]})
                 self.wall_managers.append(wallManager)
             walls = [[] for _ in self.wall_managers]
             blocks = self.GetAvailableBlocks({})
             while len(blocks["ParameterList"]) > 0:
                 for block in blocks["ParameterList"]:
                     for i, wm in enumerate(self.wall_managers):
-                        if bool(wm.invoke_sync("IsBlockOnWall", {"Vector3":block["Position3D"]})["bool"]):
+                        if bool(wm.invoke_sync("IsBlockOnWall", {"Vector3": block["Position3D"]})["bool"]):
                             walls[i].append(block)
                             break
                 blocks = self.GetAvailableBlocks({})
