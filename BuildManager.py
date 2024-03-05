@@ -35,25 +35,34 @@ class BuildManager(AbstractVirtualCapability):
 
     def GetWallManagers(self, params: dict):
         if self.build_plan:
-            for i, wall in enumerate(self.GetWalls({})["ListOfPoints"]):
+            walls = self.GetWalls({})["ListOfPoints"]
+            starting_points = self.GetStartingPoints(params)["ListOfPoints"]
+            for i, wall in enumerate(walls):
                 wallManager = self.query_sync("WallManager")
                 # wallManager.invoke_sync("SetWall", {"Vector3": wall})
                 wallManager.invoke_sync("SetupWall",
                                         {"int": 1, "Vector3": wall,
-                                         "ListOfPoints": self.GetStartingPoints(params)["ListOfPoints"][i]})
+                                         "ListOfPoints": starting_points[i]})
                 self.wall_managers.append(wallManager)
-            walls = [[] for _ in self.wall_managers]
+
+            wall_blocks = [[] for _ in self.wall_managers]
             blocks = self.GetAvailableBlocks({})
             while len(blocks["ParameterList"]) > 0:
                 for block in blocks["ParameterList"]:
-                    for i, wm in enumerate(self.wall_managers):
+                    for i, wall in enumerate(walls):
+                        p = np.sum(np.array(wall[:3]) * np.array(params["Vector3"]))
+                        p = float(np.abs(p - wall[3])) < 1e-3
+                        if p:
+                            wall_blocks[i].append(block)
+                        """ old code, long execution time
                         if bool(wm.invoke_sync("IsBlockOnWall", {"Vector3": block["Position3D"]})["bool"]):
                             walls[i].append(block)
-                            break
+                            break"""
                 blocks = self.GetAvailableBlocks({})
                 formatPrint(self, f"Still running with {blocks}")
+
             for i, wm in enumerate(self.wall_managers):
-                wm.invoke_sync("SetBlocks", {"ParameterList": walls[i]})
+                wm.invoke_sync("SetBlocks", {"ParameterList": wall_blocks[i]})
 
         return {"DeviceList": self.wall_managers}
 
