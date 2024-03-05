@@ -168,6 +168,7 @@ if __name__ == '__main__':
             ip = str(sys.argv[2])
         server = VirtualCapabilityServer(port, ip)
         listener = BuildManager(server)
+        listener.uri = "BuildManager"
         listener.start()
         signal.signal(signal.SIGTERM, handler)
         listener.join()
