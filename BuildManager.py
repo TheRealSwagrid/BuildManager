@@ -59,7 +59,7 @@ class BuildManager(AbstractVirtualCapability):
                             walls[i].append(block)
                             break"""
                 blocks = self.GetAvailableBlocks({})
-                formatPrint(self, f"Still running with {blocks}")
+                # formatPrint(self, f"Still running with {blocks}")
 
             for i, wm in enumerate(self.wall_managers):
                 wm.invoke_sync("SetBlocks", {"ParameterList": wall_blocks[i]})
