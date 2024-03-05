@@ -50,7 +50,7 @@ class BuildManager(AbstractVirtualCapability):
             while len(blocks["ParameterList"]) > 0:
                 for block in blocks["ParameterList"]:
                     for i, wall in enumerate(walls):
-                        p = np.sum(np.array(wall[:3]) * np.array(params["Vector3"]))
+                        p = np.sum(np.array(wall[:3]) * np.array(block["Position3D"]))
                         p = float(np.abs(p - wall[3])) < 1e-3
                         if p:
                             wall_blocks[i].append(block)
