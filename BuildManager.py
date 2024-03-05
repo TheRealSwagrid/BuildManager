@@ -89,7 +89,8 @@ class BuildManager(AbstractVirtualCapability):
                 rot = np.round(np.array(self.build_plan[key]["rotation"]), decimals=7)
 
                 ret = {"Position3D": pos.tolist(), "Quaternion": rot.tolist(),
-                       "Vector3": (np.array(self.build_plan[key]["shape"]) * self.factor).tolist(), "int": key}
+                       "Vector3": (np.array(self.build_plan[key]["shape"]) * self.factor).tolist(), "int": key,
+                       "depends_on": self.build_plan[key]["depends_on"]}
                 blocks.append(ret)
         for b in blocks:
             self.fitted_blocks += [b["int"]]
