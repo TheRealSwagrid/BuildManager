@@ -16,7 +16,7 @@ class BuildManager(AbstractVirtualCapability):
     def __init__(self, server):
         super().__init__(server)
         self.build_plan = {}
-        self.fitted_blocks = []
+        self.fitted_blocks = {}
         self.max_key = -1
         self.factor = 1
         self.wall_managers = []
@@ -39,7 +39,6 @@ class BuildManager(AbstractVirtualCapability):
             starting_points = self.GetStartingPoints(params)["ListOfPoints"]
             for i, wall in enumerate(walls):
                 wallManager = self.query_sync("WallManager")
-                # wallManager.invoke_sync("SetWall", {"Vector3": wall})
                 wallManager.invoke_sync("SetupWall",
                                         {"int": 1, "Vector3": wall,
                                          "ListOfPoints": starting_points[i]})
@@ -80,7 +79,7 @@ class BuildManager(AbstractVirtualCapability):
 
                 ret = {"Position3D": pos.tolist(), "Quaternion": rot.tolist(),
                        "Vector3": self.build_plan[key]["shape"]}
-                self.fitted_blocks += [key]
+                self.fitted_blocks[key] = None
                 return ret
         raise ValueError("No Block avaiable")
 
@@ -102,7 +101,7 @@ class BuildManager(AbstractVirtualCapability):
                        "depends_on": self.build_plan[key]["depends_on"]}
                 blocks.append(ret)
         for b in blocks:
-            self.fitted_blocks += [b["int"]]
+            self.fitted_blocks[b["int"]] = None
         return {"ParameterList": blocks}
 
     # noinspection PyUnreachableCode
