@@ -20,6 +20,7 @@ class BuildManager(AbstractVirtualCapability):
         self.max_key = -1
         self.factor = 1
         self.wall_managers = []
+        self.exclude_bricks = []
 
     def LoadBuildPlan(self, params: dict):
         file_location = params["SimpleStringParameter"]
@@ -27,9 +28,25 @@ class BuildManager(AbstractVirtualCapability):
         if os.path.exists(file_location):
             with open(file_location, mode='r') as file:
                 self.build_plan = json.loads(file.read())
-                self.max_key = max([int(k) for k in self.build_plan.keys()])
+            self.max_key = max([int(k) for k in self.build_plan.keys()])
+            positions = []
+            new_bp = dict()
+
+            for b in self.build_plan.keys():
+                pos = self.build_plan[b]["position"]
+                formatPrint(self, f"new Stone@{b} = {pos}")
+                if pos in positions:
+                    formatPrint(self,
+                                f"Two stones are IDENTICAL with pos: {pos}. Other stone = {positions.index(pos) + 1}")
+                    self.exclude_bricks.append(b)
+                else:
+                    new_bp[b] = deepcopy(self.build_plan[b])
+                positions.append(pos)
+                formatPrint(self, str(positions))
         else:
             raise FileNotFoundError("This file does not exist")
+        self.build_plan = new_bp
+
         formatPrint(self, f"New BuildPlan: {self.build_plan}")
         return {}
 
@@ -40,23 +57,29 @@ class BuildManager(AbstractVirtualCapability):
             for i, wall in enumerate(walls):
                 wallManager = self.query_sync("WallManager")
                 wallManager.invoke_sync("SetupWall",
-                                        {"int": 1, "Vector3": wall,
+                                        {"int": i, "Vector3": wall,
                                          "ListOfPoints": starting_points[i]})
                 self.wall_managers.append(wallManager)
 
             wall_blocks = [[] for _ in self.wall_managers]
             blocks = self.GetAvailableBlocks({})
             while len(blocks["ParameterList"]) > 0:
-                for block in blocks["ParameterList"]:
+                toprintblocks = [b["int"] for b in blocks["ParameterList"]]
+                formatPrint(self, f"SETTINGBLOCKS={len(toprintblocks)}\n{toprintblocks}")
+                for block in blocks["ParameterList"]:#
+                    block_is_on_some_wall = False
                     for i, wall in enumerate(walls):
                         p = np.sum(np.array(wall[:3]) * np.array(block["Position3D"]))
                         p = float(np.abs(p - wall[3])) < 1e-3
+                        block_is_on_some_wall |= p
                         if p:
                             wall_blocks[i].append(block)
                         """ old code, long execution time
                         if bool(wm.invoke_sync("IsBlockOnWall", {"Vector3": block["Position3D"]})["bool"]):
                             walls[i].append(block)
                             break"""
+                    if not block_is_on_some_wall:
+                        raise ValueError(f"Block {block} could not be placed...")
                 blocks = self.GetAvailableBlocks({})
                 # formatPrint(self, f"Still running with {blocks}")
 
@@ -68,17 +91,17 @@ class BuildManager(AbstractVirtualCapability):
     def GetNextBlockPosition(self, params: dict):
         for i in range(1, self.max_key):
             key = str(i)
-            if key not in self.fitted_blocks:
+            if key not in self.fitted_blocks and key not in self.exclude_bricks:
                 dependency_resolved = True
                 for dependency in self.build_plan[key]["depends_on"]:
-                    dependency_resolved &= str(dependency) in self.fitted_blocks
+                    dependency_resolved &= str(dependency) in self.fitted_blocks or str(dependency) in self.exclude_bricks
                 if not dependency_resolved:
                     continue
                 pos = np.round(np.array(self.build_plan[key]["position"]), decimals=5)
                 rot = np.round(np.array(self.build_plan[key]["rotation"]), decimals=7)
 
                 ret = {"Position3D": pos.tolist(), "Quaternion": rot.tolist(),
-                       "Vector3": self.build_plan[key]["shape"]}
+                       "Vector3": self.build_plan[key]["shape"], "SimpleIntegerParameter":int(key)}
                 self.fitted_blocks[key] = None
                 return ret
         raise ValueError("No Block avaiable")
@@ -87,18 +110,23 @@ class BuildManager(AbstractVirtualCapability):
         blocks = []
         for i in range(1, self.max_key):
             key = str(i)
-            if key not in self.fitted_blocks:
+            if key not in self.fitted_blocks and key not in self.exclude_bricks:
                 dependency_resolved = True
                 for dependency in self.build_plan[key]["depends_on"]:
-                    dependency_resolved &= str(dependency) in self.fitted_blocks
+                    dependency_resolved &= str(dependency) in self.fitted_blocks or str(dependency) in self.exclude_bricks
                 if not dependency_resolved:
                     continue
                 pos = np.round(np.array(self.build_plan[key]["position"]), decimals=5) * self.factor
                 rot = np.round(np.array(self.build_plan[key]["rotation"]), decimals=7)
 
+                new_dep = []
+                for dep in self.build_plan[key]["depends_on"]:
+                    if str(dep) not in self.exclude_bricks:
+                        new_dep.append(dep)
+
                 ret = {"Position3D": pos.tolist(), "Quaternion": rot.tolist(),
                        "Vector3": (np.array(self.build_plan[key]["shape"]) * self.factor).tolist(), "int": key,
-                       "depends_on": self.build_plan[key]["depends_on"]}
+                       "depends_on": new_dep}
                 blocks.append(ret)
         for b in blocks:
             self.fitted_blocks[b["int"]] = None
@@ -109,6 +137,8 @@ class BuildManager(AbstractVirtualCapability):
         walls = []
         for i in range(1, self.max_key):
             key = str(i)
+            if key in self.exclude_bricks:
+                continue
             block = self.build_plan[key]
             pos = np.array(block["position"]) * self.factor
             rotation = block["rotation"]
